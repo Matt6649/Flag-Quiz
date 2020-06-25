@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Flag Quiz</title>
+    <meta name="description" content="A simple game to test knowledge of national flags.">
+    <meta name="author" content="Matthew Pellow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/skeleton.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <style>
+        .scoreTracker {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        img {
+            max-width: 75%;
+            height: auto;
+        }
+        body {
+            background-color:  	#f8f8ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center>
+            <br>
+            <h1>Flag Quiz</h1>
+            <br>
+            <div class="row">
+                <span class="scoreTracker" id="q1" title=""></span>
+                <span class="scoreTracker" id="q2" title=""></span>
+                <span class="scoreTracker" id="q3" title=""></span>
+                <span class="scoreTracker" id="q4" title=""></span>
+                <span class="scoreTracker" id="q5" title=""></span>
+                <span class="scoreTracker" id="q6" title=""></span>
+                <span class="scoreTracker" id="q7" title=""></span>
+                <span class="scoreTracker" id="q8" title=""></span>
+                <span class="scoreTracker" id="q9" title=""></span>
+                <span class="scoreTracker" id="q10" title=""></span>
+            </div>
+            <br>
+            <div class="row">
+                <h3 id="finalScore"></h3>
+                <img id="flagImg" src="" width="50%" height="50%">
+                <h3 id="finalScore"></h3>
+                <button id="reload" class="button-primary" onclick="window.location = window.location;">Play Again</button>
+            </div>
+        </center>
+        <div class="row">
+            <div class="ten columns">
+                <input id="countryName" class="u-full-width" type="text" placeholder="Country name...">
+            </div>
+            <div class="two columns">
+                <button id="submit" class="button-primary" onclick="nextFlag()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <script src="/js/flags.js"></script>
+    <script>
+        document.getElementById("reload").style.visibility = "hidden";
+        let score = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let rawScore = 0;
+        let turn = 0;
+        window.onload = nextFlag();
+        document.getElementById("countryName").addEventListener("keyup", function(key) {
+            if (key.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("submit").click();
+            }
+        });
+
+        function nextFlag() {
+            if (turn <= 9) {
+                document.getElementById("finalScore").style.visibility = "hidden";
+                let answer = "";
+                let x = Math.floor(Math.random() * (Math.floor(254) - Math.ceil(1) + 1)) + Math.ceil(1);
+                document.getElementById("flagImg").src = countries[x]["url"];
+                document.getElementById("submit").onclick = function() {
+                    if (answer === undefined) {
+                        answer = "";
+                    } else {
+                        answer = document.getElementById("countryName").value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                    }
+                    if (answer == countries[x]["country"].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()) {
+                        score[turn] = 1;
+                        rawScore++;
+                        turn++;
+                        document.getElementById("q" + turn).style.backgroundColor = "#32CD32";
+                        document.getElementById("q" + turn).title = countries[x]["country"];
+                    } else {
+                        score[turn] = -1;
+                        turn++;
+                        document.getElementById("q" + turn).style.backgroundColor = "#FF0000";
+                        document.getElementById("q" + turn).title = countries[x]["country"];
+                    }
+                    document.getElementById("countryName").value = "";
+                    nextFlag();
+                }
+            } else {
+                document.getElementById("flagImg").style.visibility = "hidden";
+                document.getElementById("submit").style.visibility = "hidden";
+                document.getElementById("countryName").style.visibility = "hidden";
+                document.getElementById("finalScore").innerHTML = rawScore + "/10";
+                document.getElementById("finalScore").style.visibility = "visible";
+                document.getElementById("reload").style.visibility = "visible";
+            }
+        }
+
+    </script>
+</body>
+
+</html>
