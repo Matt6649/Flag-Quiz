@@ -103,7 +103,6 @@
           x = Math.floor(Math.random() * (Math.floor(254) - Math.ceil(1) + 1)) + Math.ceil(1);
         }
         document.getElementById("flagImg").src = countries[x]["url"];
-        questions.push(x);
         document.getElementById("submit").onclick = function () {
           if (answer === undefined) {
             answer = "";
@@ -136,7 +135,7 @@
             document.getElementById("q" + turn).title =
               countries[x]["country"];
           }
-          x.append(x);
+          questions.push(x);
           document.getElementById("countryName").value = "";
           nextFlag();
         };
